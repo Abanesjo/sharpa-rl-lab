@@ -1,4 +1,4 @@
-FROM sharpadev/sharpawavesdk:4.3.2
+FROM sharpadev/sharpawavesdk:4.6.6.357f
 
 RUN apt-get update && \
     apt-get install -y \
@@ -19,10 +19,9 @@ RUN pip install \
     termcolor \
     tensorboardX
 
-RUN pip install --index-url https://download.pytorch.org/whl/cu124 \
-    torch==2.6.0 \
-    torchvision==0.21.0 \
-    torchaudio==2.6.0
+RUN pip install --index-url https://download.pytorch.org/whl/cu130 \
+    torch==2.9.0 \
+    torchvision==0.24.0 \
 
 RUN pip cache purge
 
