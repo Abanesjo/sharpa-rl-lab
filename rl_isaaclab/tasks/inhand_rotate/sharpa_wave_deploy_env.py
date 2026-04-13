@@ -362,8 +362,10 @@ class SharpaWaveInhandRotateDeployEnv(gym.Env):
         # get tactile data
         for ch in range(5):
             _, f_norm, _, contact_pos_ch = self.frames[4-ch+5*(1-self.cfg.hand_side)]
-            force[ch] = f_norm
-            contact_pos[ch] = contact_pos_ch
+            if f_norm is not None:
+                force[ch] = f_norm
+            if contact_pos_ch is not None:
+                contact_pos[ch] = contact_pos_ch
         
         # check disable
         force[self.cfg.disable_tactile_ids] = 0.0

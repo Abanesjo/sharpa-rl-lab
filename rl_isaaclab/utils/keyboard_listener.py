@@ -1,15 +1,13 @@
 import threading
-import time
-
-from pynput import keyboard
+import sys
 
 from rl_isaaclab.utils.misc import ThreadSafeValue
 
 
 class KeyboardListener:
-    def __init__(self, 
-                 deploy_state_flag: ThreadSafeValue, 
-                 calib_tactile_flag: ThreadSafeValue, 
+    def __init__(self,
+                 deploy_state_flag: ThreadSafeValue,
+                 calib_tactile_flag: ThreadSafeValue,
                  hand_ip: str):
         self.deploy_state_flag = deploy_state_flag
         self.hand_ip = hand_ip
@@ -18,7 +16,7 @@ class KeyboardListener:
         self.stop_event = threading.Event()
         self.thread = threading.Thread(target=self._run, daemon=True)
 
-    def _on_press(self, key):
+    def _run(self):
         '''
         deploy_state_flag:
             0: move home
@@ -29,11 +27,16 @@ class KeyboardListener:
             0: silence
             1: calibrate tactile
         '''
-        try:
-            if key.char == 'q':
+        print("[Keyboard] Controls: e=start, w=freeze/resume, q=home, t=calibrate")
+        while not self.stop_event.is_set():
+            try:
+                key = input().strip().lower()
+            except EOFError:
+                break
+            if key == 'q':
                 print('[Keyboard] Moving home.')
                 self.deploy_state_flag.set(0)
-            elif key.char == 'w':
+            elif key == 'w':
                 if self.deploy_state_flag.get() != 1:
                     self.last_deploy_state_flag = self.deploy_state_flag.get()
                     print('[Keyboard] Freeze actions.')
@@ -41,24 +44,14 @@ class KeyboardListener:
                 else:
                     print('[Keyboard] Continue actions.')
                     self.deploy_state_flag.set(self.last_deploy_state_flag)
-            elif key.char == 'e':
+            elif key == 'e':
                 print('[Keyboard] Start policy.')
                 self.deploy_state_flag.set(2)
-            elif key.char == 't':
+            elif key == 't':
                 self.calib_tactile_flag.set(1)
                 print("[Keyboard] Tactile calibration.")
-            else:
-                pass
-        except:
-            pass
-
-    def _run(self):
-        with keyboard.Listener(on_press=self._on_press) as listener:
-            while not self.stop_event.is_set():
-                time.sleep(0.01)
-            listener.stop()
         print("[Keyboard] Keyboard listener stopped.")
-    
+
     def start(self):
         self.thread.start()
 

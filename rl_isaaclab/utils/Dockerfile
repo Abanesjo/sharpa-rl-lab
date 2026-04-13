@@ -7,23 +7,18 @@ RUN apt-get update && \
     python3-venv \
     libevdev-dev
 
-RUN pip install --upgrade \
-    pip \
-    setuptools \
-    wheel
-
-RUN pip install \
+RUN pip3 install --break-system-packages \
     gymnasium==1.2.1 \
     omegaconf==2.3.0 \
     pynput \
     termcolor \
     tensorboardX
 
-RUN pip install --index-url https://download.pytorch.org/whl/cu130 \
+RUN pip3 install --break-system-packages --index-url https://download.pytorch.org/whl/cu130 \
     torch==2.9.0 \
-    torchvision==0.24.0 \
+    torchvision==0.24.0
 
-RUN pip cache purge
+RUN pip3 cache purge
 
 RUN apt-get remove -y \
     build-essential \

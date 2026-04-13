@@ -16,7 +16,7 @@ services:
     privileged: true
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
-      - ${sharpawave-rl-lab}:/root/sharpawave-rl-lab
+      - ${SHARPAWAVE_RL_LAB}:/root/sharpawave-rl-lab
     environment:
       - DISPLAY=${DISPLAY}
       - QT_X11_NO_MITSHM=1
